@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { apiGet, apiPost } from "../client.js";
+import { apiGet, apiPost, apiPatch } from "../client.js";
 
 export const getLeadsSchema = z.object({
   page: z.number().optional().describe("Номер страницы (по умолчанию 1)"),
@@ -28,5 +28,20 @@ export const createLeadSchema = z.object({
 export async function handleCreateLead(params: z.infer<typeof createLeadSchema>): Promise<string> {
   const body = [params];
   const data = await apiPost<unknown>("/leads", body);
+  return JSON.stringify(data, null, 2);
+}
+
+export const updateLeadSchema = z.object({
+  id: z.number().describe("ID сделки для обновления"),
+  name: z.string().optional().describe("Новое название сделки"),
+  price: z.number().optional().describe("Новый бюджет"),
+  status_id: z.number().optional().describe("Новый статус"),
+  pipeline_id: z.number().optional().describe("Новая воронка"),
+  responsible_user_id: z.number().optional().describe("Новый ответственный"),
+});
+
+export async function handleUpdateLead(params: z.infer<typeof updateLeadSchema>): Promise<string> {
+  const { id, ...fields } = params;
+  const data = await apiPatch<unknown>(`/leads/${id}`, fields);
   return JSON.stringify(data, null, 2);
 }

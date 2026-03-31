@@ -1,14 +1,15 @@
 {
   "name": "@theyahia/amocrm-mcp",
   "version": "1.0.0",
-  "description": "MCP server for amoCRM API — leads, contacts, pipelines. Auth: Bearer token.",
+  "description": "Lightweight MCP server for amoCRM — 10 tools, OAuth 2.0 with auto-refresh, plug & play.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
     "amocrm-mcp": "dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "smithery.yaml"
   ],
   "engines": {
     "node": ">=18.0.0"
@@ -17,6 +18,9 @@
     "build": "tsc",
     "dev": "tsx src/index.ts",
     "start": "node dist/index.js",
+    "start:http": "node dist/index.js --http",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
@@ -26,7 +30,8 @@
   "devDependencies": {
     "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^3.1.1"
   },
   "publishConfig": {
     "access": "public"
@@ -35,7 +40,8 @@
   "keywords": [
     "mcp", "mcp-server", "model-context-protocol", "modelcontextprotocol",
     "claude", "ai", "llm", "anthropic", "cursor", "ai-tools", "ai-agent",
-    "russian-api", "amocrm", "crm", "leads", "contacts", "sales"
+    "russian-api", "amocrm", "crm", "leads", "contacts", "sales",
+    "oauth", "streamable-http", "smithery"
   ],
   "license": "MIT",
   "repository": {
