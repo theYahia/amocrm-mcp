@@ -1,6 +1,6 @@
 {
   "name": "@theyahia/amocrm-mcp",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Lightweight MCP server for amoCRM — 10 tools, OAuth 2.0 with auto-refresh, plug & play.",
   "type": "module",
   "main": "dist/index.js",
@@ -38,10 +38,26 @@
   },
   "mcpName": "io.github.theYahia/amocrm-mcp",
   "keywords": [
-    "mcp", "mcp-server", "model-context-protocol", "modelcontextprotocol",
-    "claude", "ai", "llm", "anthropic", "cursor", "ai-tools", "ai-agent",
-    "russian-api", "amocrm", "crm", "leads", "contacts", "sales",
-    "oauth", "streamable-http", "smithery"
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "modelcontextprotocol",
+    "claude",
+    "ai",
+    "llm",
+    "anthropic",
+    "cursor",
+    "ai-tools",
+    "ai-agent",
+    "russian-api",
+    "amocrm",
+    "crm",
+    "leads",
+    "contacts",
+    "sales",
+    "oauth",
+    "streamable-http",
+    "smithery"
   ],
   "license": "MIT",
   "repository": {
