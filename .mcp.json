@@ -1,0 +1,1 @@
+{"mcpServers":{"amocrm":{"command":"npx","args":["-y","@theyahia/amocrm-mcp"],"env":{"AMOCRM_DOMAIN":"","AMOCRM_ACCESS_TOKEN":""}}}}
