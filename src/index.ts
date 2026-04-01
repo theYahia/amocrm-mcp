@@ -2,89 +2,221 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import { createServer } from "node:http";
-import type { IncomingMessage, ServerResponse } from "node:http";
-import { getLeadsSchema, handleGetLeads, createLeadSchema, handleCreateLead, updateLeadSchema, handleUpdateLead } from "./tools/leads.js";
-import { getContactsSchema, handleGetContacts, createContactSchema, handleCreateContact } from "./tools/contacts.js";
-import { getCompaniesSchema, handleGetCompanies } from "./tools/companies.js";
-import { getPipelinesSchema, handleGetPipelines } from "./tools/pipelines.js";
-import { createTaskSchema, handleCreateTask } from "./tools/tasks.js";
+
+import { listLeadsSchema, handleListLeads, getLeadSchema, handleGetLead, createLeadSchema, handleCreateLead, updateLeadSchema, handleUpdateLead } from "./tools/leads.js";
+import { listContactsSchema, handleListContacts, getContactSchema, handleGetContact, createContactSchema, handleCreateContact } from "./tools/contacts.js";
+import { listCompaniesSchema, handleListCompanies, createCompanySchema, handleCreateCompany } from "./tools/companies.js";
+import { listPipelinesSchema, handleListPipelines } from "./tools/pipelines.js";
+import { listTasksSchema, handleListTasks, createTaskSchema, handleCreateTask, completeTaskSchema, handleCompleteTask } from "./tools/tasks.js";
+import { listUnsortedSchema, handleListUnsorted, acceptUnsortedSchema, handleAcceptUnsorted } from "./tools/unsorted.js";
+import { listEventsSchema, handleListEvents } from "./tools/events.js";
+import { getAccountSchema, handleGetAccount } from "./tools/account.js";
 import { addNoteSchema, handleAddNote } from "./tools/notes.js";
 import { searchSchema, handleSearch } from "./tools/search.js";
 
-function createMcpServer(): McpServer {
-  const server = new McpServer({
-    name: "amocrm-mcp",
-    version: "1.1.0",
-  });
+const server = new McpServer({
+  name: "amocrm-mcp",
+  version: "2.0.0",
+});
 
-  server.tool("get_leads", "Получить список сделок из amoCRM с фильтрацией и пагинацией.", getLeadsSchema.shape,
-    async (params) => ({ content: [{ type: "text", text: await handleGetLeads(params) }] }));
+// --- Leads (4 tools) ---
 
-  server.tool("create_lead", "Создать новую сделку в amoCRM.", createLeadSchema.shape,
-    async (params) => ({ content: [{ type: "text", text: await handleCreateLead(params) }] }));
+server.tool(
+  "list_leads",
+  "Search and list deals (leads) in amoCRM. Supports filtering by pipeline, statuses, and full-text search. Use 'with' to embed contacts or loss reasons.",
+  listLeadsSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleListLeads(params) }],
+  }),
+);
 
-  server.tool("update_lead", "Обновить существующую сделку в amoCRM (название, бюджет, статус, воронку).", updateLeadSchema.shape,
-    async (params) => ({ content: [{ type: "text", text: await handleUpdateLead(params) }] }));
+server.tool(
+  "get_lead",
+  "Get a single lead by ID with full details. Use 'with' to include linked contacts and catalog elements.",
+  getLeadSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleGetLead(params) }],
+  }),
+);
 
-  server.tool("get_contacts", "Получить список контактов из amoCRM с фильтрацией и пагинацией.", getContactsSchema.shape,
-    async (params) => ({ content: [{ type: "text", text: await handleGetContacts(params) }] }));
+server.tool(
+  "create_lead",
+  "Create a new lead (deal) in amoCRM. Requires a name. Optionally set price, pipeline, status, responsible user, and custom fields.",
+  createLeadSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleCreateLead(params) }],
+  }),
+);
 
-  server.tool("create_contact", "Создать новый контакт в amoCRM.", createContactSchema.shape,
-    async (params) => ({ content: [{ type: "text", text: await handleCreateContact(params) }] }));
+server.tool(
+  "update_lead",
+  "Update an existing lead — change name, price, status, pipeline, responsible user, or custom fields. Useful for moving deals between stages.",
+  updateLeadSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleUpdateLead(params) }],
+  }),
+);
 
-  server.tool("get_companies", "Получить список компаний из amoCRM с фильтрацией и пагинацией.", getCompaniesSchema.shape,
-    async (params) => ({ content: [{ type: "text", text: await handleGetCompanies(params) }] }));
+// --- Contacts (3 tools) ---
 
-  server.tool("get_pipelines", "Получить список воронок продаж и их статусов из amoCRM.", getPipelinesSchema.shape,
-    async (params) => ({ content: [{ type: "text", text: await handleGetPipelines(params) }] }));
+server.tool(
+  "list_contacts",
+  "Search and list contacts in amoCRM. Supports full-text search across name, phone, and email.",
+  listContactsSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleListContacts(params) }],
+  }),
+);
 
-  server.tool("create_task", "Создать задачу в amoCRM привязанную к сделке, контакту или компании.", createTaskSchema.shape,
-    async (params) => ({ content: [{ type: "text", text: await handleCreateTask(params) }] }));
+server.tool(
+  "get_contact",
+  "Get a single contact by ID with full details including custom fields (phone, email, etc.).",
+  getContactSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleGetContact(params) }],
+  }),
+);
 
-  server.tool("add_note", "Добавить примечание к сделке, контакту или компании в amoCRM.", addNoteSchema.shape,
-    async (params) => ({ content: [{ type: "text", text: await handleAddNote(params) }] }));
+server.tool(
+  "create_contact",
+  "Create a new contact in amoCRM. Use custom_fields_values to set phone, email, and other fields.",
+  createContactSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleCreateContact(params) }],
+  }),
+);
 
-  server.tool("search", "Универсальный поиск по amoCRM — сделки, контакты, компании.", searchSchema.shape,
-    async (params) => ({ content: [{ type: "text", text: await handleSearch(params) }] }));
+// --- Companies (2 tools) ---
 
-  return server;
-}
+server.tool(
+  "list_companies",
+  "Search and list companies in amoCRM. Use 'with' to embed linked leads and contacts.",
+  listCompaniesSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleListCompanies(params) }],
+  }),
+);
 
-async function startStdio() {
-  const server = createMcpServer();
+server.tool(
+  "create_company",
+  "Create a new company in amoCRM. Use custom_fields_values for address, website, etc.",
+  createCompanySchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleCreateCompany(params) }],
+  }),
+);
+
+// --- Pipelines (1 tool) ---
+
+server.tool(
+  "list_pipelines",
+  "List all sales pipelines with their statuses (stages). Essential for understanding the sales funnel structure before creating or filtering leads.",
+  listPipelinesSchema.shape,
+  async () => ({
+    content: [{ type: "text", text: await handleListPipelines() }],
+  }),
+);
+
+// --- Tasks (3 tools) ---
+
+server.tool(
+  "list_tasks",
+  "List tasks in amoCRM. Filter by entity (lead/contact/company), completion status, or responsible user.",
+  listTasksSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleListTasks(params) }],
+  }),
+);
+
+server.tool(
+  "create_task",
+  "Create a task linked to a lead, contact, or company. Set deadline (complete_till as Unix timestamp) and task type (1=Call, 2=Meeting, 3=Email).",
+  createTaskSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleCreateTask(params) }],
+  }),
+);
+
+server.tool(
+  "complete_task",
+  "Mark a task as completed and add a result text. The result will appear in the entity's activity feed.",
+  completeTaskSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleCompleteTask(params) }],
+  }),
+);
+
+// --- Unsorted (2 tools) ---
+
+server.tool(
+  "list_unsorted",
+  "List incoming unsorted leads (from forms, email parsing, etc.) that need to be accepted or declined.",
+  listUnsortedSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleListUnsorted(params) }],
+  }),
+);
+
+server.tool(
+  "accept_unsorted",
+  "Accept an unsorted lead — moves it into a pipeline as a real lead. Optionally specify target pipeline, status, and responsible user.",
+  acceptUnsortedSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleAcceptUnsorted(params) }],
+  }),
+);
+
+// --- Notes (1 tool) ---
+
+server.tool(
+  "add_note",
+  "Add a note to a lead, contact, or company. Supports common notes, incoming/outgoing call logs, and service messages.",
+  addNoteSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleAddNote(params) }],
+  }),
+);
+
+// --- Search (1 tool) ---
+
+server.tool(
+  "search",
+  "Universal search across amoCRM — finds leads, contacts, and companies matching the query. Min 3 characters.",
+  searchSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleSearch(params) }],
+  }),
+);
+
+// --- Events (1 tool) ---
+
+server.tool(
+  "list_events",
+  "List events (activity log) in amoCRM. Filter by entity type, entity ID, or event type. Shows status changes, calls, notes, and other activities.",
+  listEventsSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleListEvents(params) }],
+  }),
+);
+
+// --- Account (1 tool) ---
+
+server.tool(
+  "get_account",
+  "Get current amoCRM account info — name, plan, users, task types, etc. Use 'with' to include users_groups, task_types, and amojo_id.",
+  getAccountSchema.shape,
+  async (params) => ({
+    content: [{ type: "text", text: await handleGetAccount(params) }],
+  }),
+);
+
+async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("[amocrm-mcp] stdio: 10 tools ready. Requires AMOCRM_DOMAIN + AMOCRM_ACCESS_TOKEN.");
+  console.error("[amocrm-mcp] Server started. 19 tools. Requires AMOCRM_SUBDOMAIN + AMOCRM_ACCESS_TOKEN.");
 }
 
-async function startHTTP(port: number) {
-  const server = createMcpServer();
-  const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: () => crypto.randomUUID() });
-  await server.connect(transport);
-
-  const httpServer = createServer(async (req: IncomingMessage, res: ServerResponse) => {
-    if (req.url === "/mcp" && (req.method === "POST" || req.method === "GET" || req.method === "DELETE")) {
-      await transport.handleRequest(req, res);
-    } else if (req.url === "/health") {
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ status: "ok", tools: 10 }));
-    } else {
-      res.writeHead(404);
-      res.end("Not Found");
-    }
-  });
-
-  httpServer.listen(port, () => {
-    console.error(`[amocrm-mcp] HTTP server listening on port ${port} — endpoint: POST /mcp`);
-  });
-}
-
-const mode = process.argv[2];
-if (mode === "--http") {
-  const port = parseInt(process.argv[3] ?? "3000", 10);
-  startHTTP(port).catch((e) => { console.error("[amocrm-mcp] HTTP start error:", e); process.exit(1); });
-} else {
-  startStdio().catch((e) => { console.error("[amocrm-mcp] Stdio start error:", e); process.exit(1); });
-}
+main().catch((error) => {
+  console.error("[amocrm-mcp] Startup error:", error);
+  process.exit(1);
+});

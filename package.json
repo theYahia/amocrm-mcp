@@ -1,7 +1,7 @@
 {
   "name": "@theyahia/amocrm-mcp",
-  "version": "1.1.0",
-  "description": "Lightweight MCP server for amoCRM — 10 tools, OAuth 2.0 with auto-refresh, plug & play.",
+  "version": "2.0.0",
+  "description": "Production-grade MCP server for amoCRM API — 19 tools: leads, contacts, companies, pipelines, tasks, notes, search, events, unsorted. OAuth 2.0 with auto token refresh.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -18,7 +18,6 @@
     "build": "tsc",
     "dev": "tsx src/index.ts",
     "start": "node dist/index.js",
-    "start:http": "node dist/index.js --http",
     "test": "vitest run",
     "test:watch": "vitest",
     "prepublishOnly": "npm run build"
@@ -31,7 +30,7 @@
     "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0",
-    "vitest": "^3.1.1"
+    "vitest": "^3.2.4"
   },
   "publishConfig": {
     "access": "public"
@@ -55,8 +54,11 @@
     "leads",
     "contacts",
     "sales",
+    "companies",
+    "pipelines",
+    "tasks",
+    "events",
     "oauth",
-    "streamable-http",
     "smithery"
   ],
   "license": "MIT",

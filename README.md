@@ -1,48 +1,6 @@
 # @theyahia/amocrm-mcp
 
-Lightweight MCP server for amoCRM API. 10 tools, OAuth 2.0 with auto-refresh, zero config.
-
-> **Why not [caiborg-ai/amocrm-mcp](https://github.com/caiborg-ai/amocrm-mcp)?**
-> That project has 36 tools covering every corner of amoCRM API — great if you need full coverage.
-> **This one is built for plug & play:** 10 essential tools that cover 90% of daily CRM workflows, minimal setup, fast startup. Pick the one that fits.
-
----
-
-## Tools (10)
-
-| # | Tool | Description |
-|---|------|-------------|
-| 1 | `get_leads` | Get leads with filtering and pagination |
-| 2 | `create_lead` | Create a new lead |
-| 3 | `update_lead` | Update lead (name, price, status, pipeline) |
-| 4 | `get_contacts` | Get contacts with filtering and pagination |
-| 5 | `create_contact` | Create a new contact |
-| 6 | `get_companies` | Get companies with filtering and pagination |
-| 7 | `get_pipelines` | Get sales pipelines and statuses |
-| 8 | `create_task` | Create a task (call, meeting, email) |
-| 9 | `add_note` | Add a note to lead/contact/company |
-| 10 | `search` | Universal CRM search |
-
-## Skills (LLM prompts)
-
-| Skill | What it does |
-|-------|-------------|
-| `skill-enrich-lead` | Enrich lead by INN via dadata-mcp |
-| `skill-pipeline-report` | Pipeline report: leads by stage with totals |
-
-## Auth: OAuth 2.0
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `AMOCRM_DOMAIN` | Yes | amoCRM domain (`mycompany.amocrm.ru`) |
-| `AMOCRM_ACCESS_TOKEN` | Yes | OAuth access token |
-| `AMOCRM_REFRESH_TOKEN` | - | Refresh token (for auto-renewal) |
-| `AMOCRM_CLIENT_ID` | - | Integration Client ID |
-| `AMOCRM_CLIENT_SECRET` | - | Integration Client Secret |
-
-**Auto-refresh:** on 401, the server automatically calls `POST /oauth2/access_token` with refresh_token and retries the request. All 5 env vars needed for this.
-
-No integration? Just use `AMOCRM_DOMAIN` + `AMOCRM_ACCESS_TOKEN` — works as a Bearer token.
+Production-grade MCP server for [amoCRM](https://www.amocrm.ru/) API. 19 tools covering leads, contacts, companies, pipelines, tasks, notes, search, events, and unsorted leads. OAuth 2.0 with automatic token refresh. Rate limiting (7 req/sec). Retry with exponential backoff.
 
 ## Installation
 
@@ -50,7 +8,9 @@ No integration? Just use `AMOCRM_DOMAIN` + `AMOCRM_ACCESS_TOKEN` — works as a 
 npx -y @theyahia/amocrm-mcp
 ```
 
-## MCP Configuration (Claude Desktop / Cursor)
+## MCP Configuration
+
+Add to your Claude Desktop, Cursor, or any MCP client config:
 
 ```json
 {
@@ -59,7 +19,7 @@ npx -y @theyahia/amocrm-mcp
       "command": "npx",
       "args": ["-y", "@theyahia/amocrm-mcp"],
       "env": {
-        "AMOCRM_DOMAIN": "mycompany.amocrm.ru",
+        "AMOCRM_SUBDOMAIN": "mycompany",
         "AMOCRM_ACCESS_TOKEN": "your-access-token",
         "AMOCRM_REFRESH_TOKEN": "your-refresh-token",
         "AMOCRM_CLIENT_ID": "your-client-id",
@@ -70,23 +30,130 @@ npx -y @theyahia/amocrm-mcp
 }
 ```
 
-## Streamable HTTP (remote / multi-client)
+## Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `AMOCRM_SUBDOMAIN` | Yes | Your amoCRM subdomain (e.g. `mycompany` from `mycompany.amocrm.ru`) |
+| `AMOCRM_ACCESS_TOKEN` | Yes | OAuth access token |
+| `AMOCRM_REFRESH_TOKEN` | No | OAuth refresh token (enables auto-refresh on 401) |
+| `AMOCRM_CLIENT_ID` | No | OAuth client ID (required for token refresh) |
+| `AMOCRM_CLIENT_SECRET` | No | OAuth client secret (required for token refresh) |
+
+> `AMOCRM_DOMAIN` is also accepted as an alias for `AMOCRM_SUBDOMAIN` (backwards compatibility).
+
+## Tools (19)
+
+### Leads
+| Tool | Description |
+|------|-------------|
+| `list_leads` | Search and list deals with filters (pipeline, statuses, query). Embed contacts, loss reasons. |
+| `get_lead` | Get a single lead by ID with linked contacts and catalog elements. |
+| `create_lead` | Create a new lead with name, price, pipeline, status, custom fields. |
+| `update_lead` | Update lead fields — move between stages, change price, reassign. |
+
+### Contacts
+| Tool | Description |
+|------|-------------|
+| `list_contacts` | Search contacts by name, phone, email. |
+| `get_contact` | Get a single contact with all custom fields. |
+| `create_contact` | Create a contact with phone, email, and custom fields. |
+
+### Companies
+| Tool | Description |
+|------|-------------|
+| `list_companies` | Search companies. Embed linked leads and contacts. |
+| `create_company` | Create a company with custom fields. |
+
+### Pipelines
+| Tool | Description |
+|------|-------------|
+| `list_pipelines` | List all sales pipelines with their statuses (stages). |
+
+### Tasks
+| Tool | Description |
+|------|-------------|
+| `list_tasks` | List tasks filtered by entity, completion, responsible user. |
+| `create_task` | Create a task linked to a lead/contact/company with deadline. |
+| `complete_task` | Mark task as done and add result text. |
+
+### Unsorted
+| Tool | Description |
+|------|-------------|
+| `list_unsorted` | List incoming unsorted leads (forms, email parsing). |
+| `accept_unsorted` | Accept an unsorted lead into a pipeline. |
+
+### Notes
+| Tool | Description |
+|------|-------------|
+| `add_note` | Add a note (common, call_in, call_out, service_message) to any entity. |
+
+### Search
+| Tool | Description |
+|------|-------------|
+| `search` | Universal search across leads, contacts, and companies. |
+
+### Events
+| Tool | Description |
+|------|-------------|
+| `list_events` | Activity log — status changes, calls, notes, links. |
+
+### Account
+| Tool | Description |
+|------|-------------|
+| `get_account` | Account info, users, task types, amojo settings. |
+
+## Demo Prompts
+
+**Sales overview:**
+> "Show me all leads in the 'Sales' pipeline that are currently in the 'Negotiation' stage. Include contact info."
+
+**Task management:**
+> "Create a follow-up call task for lead #12345, deadline tomorrow at 10:00 AM. Then list all my incomplete tasks."
+
+**New client onboarding:**
+> "Create a contact 'Ivan Petrov' with phone +79001234567, then create a company 'Petrov Solutions' and a lead 'Website Development' for 150,000 RUB in the main pipeline."
+
+## OAuth 2.0 Setup Guide
+
+1. Go to your amoCRM account settings: `https://YOUR_SUBDOMAIN.amocrm.ru/settings/widgets/`
+2. Create a new integration (external integration)
+3. Set the redirect URI to `https://YOUR_SUBDOMAIN.amocrm.ru`
+4. Copy the **Client ID** and **Client Secret**
+5. Authorize the integration to get the initial **Authorization Code**
+6. Exchange the code for tokens:
 
 ```bash
-npx @theyahia/amocrm-mcp --http 3000
-# Endpoint: POST http://localhost:3000/mcp
-# Health:   GET  http://localhost:3000/health
+curl -X POST https://YOUR_SUBDOMAIN.amocrm.ru/oauth2/access_token \
+  -H "Content-Type: application/json" \
+  -d '{
+    "client_id": "YOUR_CLIENT_ID",
+    "client_secret": "YOUR_CLIENT_SECRET",
+    "grant_type": "authorization_code",
+    "code": "YOUR_AUTH_CODE",
+    "redirect_uri": "https://YOUR_SUBDOMAIN.amocrm.ru"
+  }'
 ```
 
-## Smithery
+7. Save the `access_token` and `refresh_token` from the response
+8. The server will automatically refresh expired tokens if `AMOCRM_REFRESH_TOKEN`, `AMOCRM_CLIENT_ID`, and `AMOCRM_CLIENT_SECRET` are set
 
-[![smithery badge](https://smithery.ai/badge/@theyahia/amocrm-mcp)](https://smithery.ai/server/@theyahia/amocrm-mcp)
+## Error Handling
 
-Config in `smithery.yaml` — all 5 env vars supported.
+- **401 Unauthorized**: Auto-refreshes token if refresh credentials are configured, then retries
+- **429 Rate Limited**: Respects `Retry-After` header, waits and retries
+- **5xx Server Errors**: Exponential backoff retry (up to 3 attempts)
+- **Rate Limiting**: Built-in 150ms delay between requests (~7 req/sec) to stay within amoCRM limits
 
----
+## Development
 
-**Need amoCRM?** Sign up here: [amostart.ru](https://www.amostart.ru)
+```bash
+git clone https://github.com/theYahia/amocrm-mcp.git
+cd amocrm-mcp
+npm install
+npm run build
+npm test
+```
 
 ## License
 
