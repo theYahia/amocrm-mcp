@@ -1,7 +1,7 @@
 {
   "name": "@theyahia/amocrm-mcp",
-  "version": "2.0.1",
-  "description": "Production-grade MCP server for amoCRM API — 19 tools: leads, contacts, companies, pipelines, tasks, notes, search, events, unsorted. OAuth 2.0 with auto token refresh.",
+  "version": "2.0.2",
+  "description": "MCP server for amoCRM — leads, contacts, pipelines, tasks (Russia)",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -59,7 +59,9 @@
     "tasks",
     "events",
     "oauth",
-    "smithery"
+    "smithery",
+    "api",
+    "typescript"
   ],
   "license": "MIT",
   "repository": {
