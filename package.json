@@ -1,6 +1,6 @@
 {
   "name": "@theyahia/amocrm-mcp",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Production-grade MCP server for amoCRM API — 19 tools: leads, contacts, companies, pipelines, tasks, notes, search, events, unsorted. OAuth 2.0 with auto token refresh.",
   "type": "module",
   "main": "dist/index.js",
