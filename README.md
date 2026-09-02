@@ -1,6 +1,6 @@
-# @theyahia/amocrm-mcp
+# amoCRM MCP — сделки, контакты и воронка продаж через нейросеть
 
-Production-grade MCP server for [amoCRM](https://www.amocrm.ru/) API. 19 tools covering leads, contacts, companies, pipelines, tasks, notes, search, events, and unsorted leads. OAuth 2.0 with automatic token refresh. Rate limiting (7 req/sec). Retry with exponential backoff.
+Если вы искали, как подключить amoCRM к ИИ-ассистенту, спросить состояние воронки обычными словами, завести сделку или найти контакт не открывая интерфейс — это оно. 19 инструментов для [amoCRM](https://www.amocrm.ru/): сделки, контакты, компании, воронки, задачи, примечания, поиск, события и неразобранное. OAuth 2.0 с автообновлением токена, ограничение 7 запросов/сек и повтор с экспоненциальной задержкой.
 
 ## Installation
 
@@ -158,3 +158,4 @@ npm test
 ## License
 
 MIT
+
