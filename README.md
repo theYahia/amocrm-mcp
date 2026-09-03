@@ -2,15 +2,15 @@
 
 Если вы искали, как подключить amoCRM к ИИ-ассистенту, спросить состояние воронки обычными словами, завести сделку или найти контакт не открывая интерфейс — это оно. 19 инструментов для [amoCRM](https://www.amocrm.ru/): сделки, контакты, компании, воронки, задачи, примечания, поиск, события и неразобранное. OAuth 2.0 с автообновлением токена, ограничение 7 запросов/сек и повтор с экспоненциальной задержкой.
 
-## Installation
+## Установка
 
 ```bash
 npx -y @theyahia/amocrm-mcp
 ```
 
-## MCP Configuration
+## Настройка MCP
 
-Add to your Claude Desktop, Cursor, or any MCP client config:
+Добавьте в конфигурацию Claude Desktop, Cursor или любого другого MCP-клиента:
 
 ```json
 {
@@ -30,98 +30,98 @@ Add to your Claude Desktop, Cursor, or any MCP client config:
 }
 ```
 
-## Environment Variables
+## Переменные окружения
 
-| Variable | Required | Description |
+| Переменная | Обяз. | Описание |
 |----------|----------|-------------|
-| `AMOCRM_SUBDOMAIN` | Yes | Your amoCRM subdomain (e.g. `mycompany` from `mycompany.amocrm.ru`) |
-| `AMOCRM_ACCESS_TOKEN` | Yes | OAuth access token |
-| `AMOCRM_REFRESH_TOKEN` | No | OAuth refresh token (enables auto-refresh on 401) |
-| `AMOCRM_CLIENT_ID` | No | OAuth client ID (required for token refresh) |
-| `AMOCRM_CLIENT_SECRET` | No | OAuth client secret (required for token refresh) |
+| `AMOCRM_SUBDOMAIN` | да | Поддомен вашего amoCRM (например, `mycompany` из `mycompany.amocrm.ru`) |
+| `AMOCRM_ACCESS_TOKEN` | да | OAuth access-токен |
+| `AMOCRM_REFRESH_TOKEN` | нет | OAuth refresh-токен (включает автообновление при 401) |
+| `AMOCRM_CLIENT_ID` | нет | OAuth client ID (нужен для обновления токена) |
+| `AMOCRM_CLIENT_SECRET` | нет | OAuth client secret (нужен для обновления токена) |
 
-> `AMOCRM_DOMAIN` is also accepted as an alias for `AMOCRM_SUBDOMAIN` (backwards compatibility).
+> `AMOCRM_DOMAIN` тоже принимается как алиас `AMOCRM_SUBDOMAIN` (обратная совместимость).
 
-## Tools (19)
+## Инструменты (19)
 
-### Leads
-| Tool | Description |
+### Сделки
+| Инструмент | Описание |
 |------|-------------|
-| `list_leads` | Search and list deals with filters (pipeline, statuses, query). Embed contacts, loss reasons. |
-| `get_lead` | Get a single lead by ID with linked contacts and catalog elements. |
-| `create_lead` | Create a new lead with name, price, pipeline, status, custom fields. |
-| `update_lead` | Update lead fields — move between stages, change price, reassign. |
+| `list_leads` | Поиск и список сделок с фильтрами (воронка, статусы, запрос). Подтягивает контакты и причины отказа. |
+| `get_lead` | Одна сделка по ID вместе со связанными контактами и элементами каталога. |
+| `create_lead` | Создать сделку с названием, бюджетом, воронкой, статусом и пользовательскими полями. |
+| `update_lead` | Обновить поля сделки — перевести между этапами, изменить бюджет, сменить ответственного. |
 
-### Contacts
-| Tool | Description |
+### Контакты
+| Инструмент | Описание |
 |------|-------------|
-| `list_contacts` | Search contacts by name, phone, email. |
-| `get_contact` | Get a single contact with all custom fields. |
-| `create_contact` | Create a contact with phone, email, and custom fields. |
+| `list_contacts` | Поиск контактов по имени, телефону, e-mail. |
+| `get_contact` | Один контакт со всеми пользовательскими полями. |
+| `create_contact` | Создать контакт с телефоном, e-mail и пользовательскими полями. |
 
-### Companies
-| Tool | Description |
+### Компании
+| Инструмент | Описание |
 |------|-------------|
-| `list_companies` | Search companies. Embed linked leads and contacts. |
-| `create_company` | Create a company with custom fields. |
+| `list_companies` | Поиск компаний. Подтягивает связанные сделки и контакты. |
+| `create_company` | Создать компанию с пользовательскими полями. |
 
-### Pipelines
-| Tool | Description |
+### Воронки
+| Инструмент | Описание |
 |------|-------------|
-| `list_pipelines` | List all sales pipelines with their statuses (stages). |
+| `list_pipelines` | Все воронки продаж вместе с их статусами (этапами). |
 
-### Tasks
-| Tool | Description |
+### Задачи
+| Инструмент | Описание |
 |------|-------------|
-| `list_tasks` | List tasks filtered by entity, completion, responsible user. |
-| `create_task` | Create a task linked to a lead/contact/company with deadline. |
-| `complete_task` | Mark task as done and add result text. |
+| `list_tasks` | Список задач с фильтрами по сущности, выполненности и ответственному. |
+| `create_task` | Создать задачу, привязанную к сделке, контакту или компании, с дедлайном. |
+| `complete_task` | Отметить задачу выполненной и добавить текст результата. |
 
-### Unsorted
-| Tool | Description |
+### Неразобранное
+| Инструмент | Описание |
 |------|-------------|
-| `list_unsorted` | List incoming unsorted leads (forms, email parsing). |
-| `accept_unsorted` | Accept an unsorted lead into a pipeline. |
+| `list_unsorted` | Входящие неразобранные заявки (формы, разбор почты). |
+| `accept_unsorted` | Принять неразобранную заявку в воронку. |
 
-### Notes
-| Tool | Description |
+### Примечания
+| Инструмент | Описание |
 |------|-------------|
-| `add_note` | Add a note (common, call_in, call_out, service_message) to any entity. |
+| `add_note` | Добавить примечание (common, call_in, call_out, service_message) к любой сущности. |
 
-### Search
-| Tool | Description |
+### Поиск
+| Инструмент | Описание |
 |------|-------------|
-| `search` | Universal search across leads, contacts, and companies. |
+| `search` | Универсальный поиск по сделкам, контактам и компаниям. |
 
-### Events
-| Tool | Description |
+### События
+| Инструмент | Описание |
 |------|-------------|
-| `list_events` | Activity log — status changes, calls, notes, links. |
+| `list_events` | Лента событий — смены статусов, звонки, примечания, связи. |
 
-### Account
-| Tool | Description |
+### Аккаунт
+| Инструмент | Описание |
 |------|-------------|
-| `get_account` | Account info, users, task types, amojo settings. |
+| `get_account` | Информация об аккаунте, пользователи, типы задач, настройки amojo. |
 
-## Demo Prompts
+## Демо-промпты
 
-**Sales overview:**
-> "Show me all leads in the 'Sales' pipeline that are currently in the 'Negotiation' stage. Include contact info."
+**Обзор продаж:**
+> «Покажи все сделки в воронке „Продажи“, которые сейчас на этапе „Переговоры“. С контактами.»
 
-**Task management:**
-> "Create a follow-up call task for lead #12345, deadline tomorrow at 10:00 AM. Then list all my incomplete tasks."
+**Работа с задачами:**
+> «Создай задачу-перезвон по сделке #12345, дедлайн завтра в 10:00. Потом выведи все мои невыполненные задачи.»
 
-**New client onboarding:**
-> "Create a contact 'Ivan Petrov' with phone +79001234567, then create a company 'Petrov Solutions' and a lead 'Website Development' for 150,000 RUB in the main pipeline."
+**Заведение нового клиента:**
+> «Создай контакт „Иван Петров“ с телефоном +79001234567, потом компанию „Петров Солюшнс“ и сделку „Разработка сайта“ на 150 000 рублей в основной воронке.»
 
-## OAuth 2.0 Setup Guide
+## Как настроить OAuth 2.0
 
-1. Go to your amoCRM account settings: `https://YOUR_SUBDOMAIN.amocrm.ru/settings/widgets/`
-2. Create a new integration (external integration)
-3. Set the redirect URI to `https://YOUR_SUBDOMAIN.amocrm.ru`
-4. Copy the **Client ID** and **Client Secret**
-5. Authorize the integration to get the initial **Authorization Code**
-6. Exchange the code for tokens:
+1. Откройте настройки аккаунта amoCRM: `https://YOUR_SUBDOMAIN.amocrm.ru/settings/widgets/`
+2. Создайте новую интеграцию (внешняя интеграция)
+3. Укажите redirect URI: `https://YOUR_SUBDOMAIN.amocrm.ru`
+4. Скопируйте **Client ID** и **Client Secret**
+5. Авторизуйте интеграцию, чтобы получить первичный **код авторизации**
+6. Обменяйте код на токены:
 
 ```bash
 curl -X POST https://YOUR_SUBDOMAIN.amocrm.ru/oauth2/access_token \
@@ -135,17 +135,17 @@ curl -X POST https://YOUR_SUBDOMAIN.amocrm.ru/oauth2/access_token \
   }'
 ```
 
-7. Save the `access_token` and `refresh_token` from the response
-8. The server will automatically refresh expired tokens if `AMOCRM_REFRESH_TOKEN`, `AMOCRM_CLIENT_ID`, and `AMOCRM_CLIENT_SECRET` are set
+7. Сохраните `access_token` и `refresh_token` из ответа
+8. Сервер сам обновит просроченный токен, если заданы `AMOCRM_REFRESH_TOKEN`, `AMOCRM_CLIENT_ID` и `AMOCRM_CLIENT_SECRET`
 
-## Error Handling
+## Обработка ошибок
 
-- **401 Unauthorized**: Auto-refreshes token if refresh credentials are configured, then retries
-- **429 Rate Limited**: Respects `Retry-After` header, waits and retries
-- **5xx Server Errors**: Exponential backoff retry (up to 3 attempts)
-- **Rate Limiting**: Built-in 150ms delay between requests (~7 req/sec) to stay within amoCRM limits
+- **401 Unauthorized** — автообновление токена, если настроены реквизиты для refresh, затем повтор запроса
+- **429 Rate Limited** — учитывает заголовок `Retry-After`, ждёт и повторяет
+- **5xx** — повтор с экспоненциальной задержкой (до 3 попыток)
+- **Ограничение частоты** — встроенная пауза 150 мс между запросами (~7 запросов/сек), чтобы укладываться в лимиты amoCRM
 
-## Development
+## Разработка
 
 ```bash
 git clone https://github.com/theYahia/amocrm-mcp.git
@@ -155,7 +155,6 @@ npm run build
 npm test
 ```
 
-## License
+## Лицензия
 
 MIT
-
