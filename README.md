@@ -1,3 +1,17 @@
+> ## 🗄 Репозиторий заархивирован
+>
+> Разработка переехала в **[theYahia/WWmcp](https://github.com/theYahia/WWmcp)** — монорепозиторий MCP-серверов для незападных API: СНГ, MENA, Африка, LATAM, Юго-Восточная Азия. Общее ядро `@theyahia/mcp-core`, единый CI, единый релизный конвейер.
+>
+> Актуальная версия того, что лежало здесь: [`servers/amocrm/`](https://github.com/theYahia/WWmcp/tree/main/servers/amocrm)
+>
+> Пакет в npm прежний — [`@theyahia/amocrm-mcp`](https://www.npmjs.com/package/@theyahia/amocrm-mcp), ставится и работает как раньше.
+> Здесь больше ничего не обновляется. Задачи и pull request'ы — в WWmcp.
+>
+> **Archived — development moved to [theYahia/WWmcp](https://github.com/theYahia/WWmcp),** a monorepo of MCP servers for non-Western APIs.
+> The current version of this package now lives at [`servers/amocrm/`](https://github.com/theYahia/WWmcp/tree/main/servers/amocrm).
+> The npm package [`@theyahia/amocrm-mcp`](https://www.npmjs.com/package/@theyahia/amocrm-mcp) is unchanged.
+> Please open issues and pull requests there.
+
 # amoCRM MCP — сделки, контакты и воронка продаж через нейросеть
 
 Если вы искали, как подключить amoCRM к ИИ-ассистенту, спросить состояние воронки обычными словами, завести сделку или найти контакт не открывая интерфейс — это оно. 19 инструментов для [amoCRM](https://www.amocrm.ru/): сделки, контакты, компании, воронки, задачи, примечания, поиск, события и неразобранное. OAuth 2.0 с автообновлением токена, ограничение 7 запросов/сек и повтор с экспоненциальной задержкой.
